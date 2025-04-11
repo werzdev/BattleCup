@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id        String   @id @default(uuid())
+  name      String
+  avatarUrl String?  @default("/uploads/avatars/profile.jpg")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  wins    Int @default(0)
+  losses  Int @default(0)
+
+  hits          Int @default(0)
+  misses        Int @default(0)
+  bombHits      Int @default(0)
+  bombMisses    Int @default(0)
+  bounceHits    Int @default(0)
+  bounceMisses  Int @default(0)
+
+  beer Int @default(0)
+
+  participations TeamGameParticipation[]
+}
+
+model Game {
+  id           String   @id @default(uuid())
+  date         DateTime @default(now())
+  teamAScore   Int
+  teamBScore   Int
+  createdAt    DateTime @default(now())
+
+  participations TeamGameParticipation[]
+}
+
+model TeamGameParticipation {
+  id        String   @id @default(uuid())
+  player    Player   @relation(fields: [playerId], references: [id])
+  playerId  String
+
+  game      Game     @relation(fields: [gameId], references: [id])
+  gameId    String
+
+  team      Team
+}
+
+enum Team {
+  A
+  B
+}
+
+model Account {
+  id       String  @id @default(uuid())
+  username String  @unique
+  password String  // hashed password
+}

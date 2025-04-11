@@ -1,10 +1,11 @@
 # compiled output
-/dist
-/node_modules
+backend/dist
+backend/node_modules
+frontend/node_modules
 /build
 /.pnp
-.pnp.*
-.yarn/*
+/.pnp.*
+/.yarn/*
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
@@ -25,10 +26,10 @@ lerna-debug.log*
 
 # Tests
 /coverage
-/.nyc_output
+.nyc_output
 
 # IDEs and editors
-/.idea
+.idea
 .project
 .classpath
 .c9/
@@ -64,16 +65,16 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # next.js
-/.next/
+frontend/.next/*
 /out/
 
 # vercel
-.vercel
+*.vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
 # misc
-.DS_Store
+*.DS_Store
 *.pem
