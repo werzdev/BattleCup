@@ -1,10 +1,17 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { api } from "@/lib/api"; // Use the standard API instance
 
 type AuthContextType = {
   user: { username: string } | null;
-  token: string | null; // Store the token
+  token: string | null;
   login: (username: string, token: string) => void;
   logout: () => void;
 };
@@ -15,18 +22,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<{ username: string } | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
+  // Utility to read cookies
+  const getCookie = (name: string): string | null => {
+    const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
+    return match ? match[2] : null;
+  };
+
+  useEffect(() => {
+    const token = getCookie("authToken");
+    const username = getCookie("username");
+    console.log("AuthContext - token from cookie:", token);
+    console.log("AuthContext - username from cookie:", username);
+
+    if (token && username) {
+      setToken(token);
+      setUser({ username });
+    }
+  }, []);
+
   const login = (username: string, token: string) => {
     setUser({ username });
-    setToken(token); // Store token in context
-    // Optionally, store the token in localStorage for persistence
-    localStorage.setItem("authToken", token);
+    setToken(token);
+    document.cookie = `authToken=${token}; path=/; max-age=86400; Secure; SameSite=Strict`;
+    document.cookie = `username=${username}; path=/; max-age=86400; Secure; SameSite=Strict`; // Store username
   };
 
   const logout = () => {
     setUser(null);
     setToken(null);
-    // Remove the user info and token from localStorage
-    localStorage.removeItem("authToken");
+    document.cookie = "authToken=; path=/; max-age=0; Secure; SameSite=Strict";
+    document.cookie = "username=; path=/; max-age=0; Secure; SameSite=Strict";
   };
 
   return (

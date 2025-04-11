@@ -19,11 +19,17 @@ const LoginPage = () => {
       try {
         const response = await api.post("/auth/login", { username, password });
 
-        // Correctly extract the token from the response
-        const token = response.data?.user?.token; // Adjusted to match the backend response structure
+        // Extract the token from the response
+        const token = response.data?.user?.token; // Adjust to match your backend response structure
         if (token) {
-          login(username, token); // Set in context
-          router.push("/"); // Redirect to the home page
+          // Store the token in a cookie
+          document.cookie = `authToken=${token}; path=/; max-age=86400; Secure; SameSite=Strict`;
+
+          // Call the login function from AuthContext
+          login(username, token);
+
+          // Redirect to the home page
+          router.push("/");
         } else {
           setError("No token received");
         }

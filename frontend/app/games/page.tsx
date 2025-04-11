@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { RequireAuth } from "@/components/RequireAuth";
 import { useAuthorizedApi } from "@/lib/useAuthorizedApi";
+import { AuthProvider } from "@/context/AuthContext";
 
 type Player = {
   id: string;
